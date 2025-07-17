@@ -86,6 +86,12 @@ public class OAuth2Authenticator
         builder.withPrincipal(new BasicPrincipal(principal.get()));
         groupsField.flatMap(field -> Optional.ofNullable((List<String>) claims.get().get(field)))
                 .ifPresent(groups -> builder.withGroups(ImmutableSet.copyOf(groups)));
+
+        // include inbound JWT Token into extraCredentials for Principal
+        Map<String, String> extraCredentials = new HashMap<>();
+        extraCredentials.put("jwt_token", tokenPair.accessToken());
+        builder.withExtraCredentials(extraCredentials);
+
         return Optional.of(builder.build());
     }
 
