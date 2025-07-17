@@ -43,6 +43,8 @@ import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.oauth2.sdk.id.State;
+import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
+import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
@@ -106,6 +108,7 @@ public class NimbusOAuth2Client
     private JWSKeySelector<SecurityContext> jwsKeySelector;
     private JWTProcessor<SecurityContext> accessTokenProcessor;
     private AuthorizationCodeFlow flow;
+    private final CodeVerifier codeVerifier;
 
     @Inject
     public NimbusOAuth2Client(OAuth2Config oauthConfig, OAuth2ServerConfigProvider serverConfigurationProvider, NimbusHttpClient httpClient)
@@ -124,6 +127,8 @@ public class NimbusOAuth2Client
 
         this.serverConfigurationProvider = requireNonNull(serverConfigurationProvider, "serverConfigurationProvider is null");
         this.httpClient = requireNonNull(httpClient, "httpClient is null");
+
+        this.codeVerifier = new CodeVerifier();
     }
 
     @Override
@@ -227,6 +232,8 @@ public class NimbusOAuth2Client
                             .scope(scope)
                             .endpointURI(authUrl)
                             .state(new State(state))
+                            .prompt(Prompt.Type.LOGIN)
+                            .codeChallenge(codeVerifier, CodeChallengeMethod.S256)
                             .build()
                             .toURI(),
                     Optional.empty());
@@ -287,6 +294,8 @@ public class NimbusOAuth2Client
                             .endpointURI(authUrl)
                             .state(new State(state))
                             .nonce(new Nonce(hashNonce(nonce)))
+                            .prompt(Prompt.Type.LOGIN)
+                            .codeChallenge(codeVerifier, CodeChallengeMethod.S256)
                             .build()
                             .toURI(),
                     Optional.of(nonce));
