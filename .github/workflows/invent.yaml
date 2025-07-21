@@ -3,7 +3,7 @@ name: invent
 on:
   push:
     branches:
-      - invent-master
+      - invent/master
     tags:
       - "v*"
   pull_request:
