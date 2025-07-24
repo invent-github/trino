@@ -130,6 +130,8 @@ TAG="${TAG_PREFIX}:${TRINO_VERSION}"
 
 for arch in "${ARCHITECTURES[@]}"; do
     echo "🫙  Building the image for $arch with JDK ${JDK_RELEASE}"
+    echo "DEBUG: work dir = $WORK_DIR"
+    ls -R "$WORK_DIR"
     docker build \
         "${WORK_DIR}" \
         --progress=plain \
