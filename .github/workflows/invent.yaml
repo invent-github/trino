@@ -76,6 +76,7 @@ jobs:
           cp "$trino_client" "${WORK_DIR}/"
           tar -C "${WORK_DIR}" -xzf "${WORK_DIR}/trino-server-${TRINO_VERSION}.tar.gz"
           mv "${WORK_DIR}/trino-server-${TRINO_VERSION}" "${WORK_DIR}/trino-server"
+          mv "${WORK_DIR}/trino-cli-${TRINO_VERSION}-executable.jar" "${WORK_DIR}/trino-cli.jar"
           rm "${WORK_DIR}/trino-server-${TRINO_VERSION}.tar.gz"
           cp -R core/docker/bin "${WORK_DIR}/trino-server-${TRINO_VERSION}"
           cp -R core/docker/default "${WORK_DIR}/"
