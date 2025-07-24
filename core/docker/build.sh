@@ -23,7 +23,7 @@ cd "${SCRIPT_DIR}" || exit 2
 
 SOURCE_DIR="${SCRIPT_DIR}/../.."
 
-ARCHITECTURES=(amd64 arm64 ppc64le)
+ARCHITECTURES=(amd64)
 TRINO_VERSION=
 TAG_PREFIX=trino
 SERVER_ARTIFACT=trino-server
