@@ -78,7 +78,7 @@ jobs:
           mv "${WORK_DIR}/trino-server-${TRINO_VERSION}" "${WORK_DIR}/trino-server"
           mv "${WORK_DIR}/trino-cli-${TRINO_VERSION}-executable.jar" "${WORK_DIR}/trino-cli.jar"
           rm "${WORK_DIR}/trino-server-${TRINO_VERSION}.tar.gz"
-          cp -R core/docker/bin "${WORK_DIR}/trino-server-${TRINO_VERSION}"
+          cp -R core/docker/bin "${WORK_DIR}/trino-server"
           cp -R core/docker/default "${WORK_DIR}/"
       - uses: docker/login-action@v3.0.0
         with:
