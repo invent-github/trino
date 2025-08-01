@@ -29,6 +29,7 @@ public class OAuth2SecurityConfig
     private String token;
     private URI serverUri;
     private boolean tokenRefreshEnabled = OAuth2Properties.TOKEN_REFRESH_ENABLED_DEFAULT;
+    private boolean jwtForward;
 
     public Optional<String> getCredential()
     {
@@ -107,5 +108,18 @@ public class OAuth2SecurityConfig
     public boolean scopePresentOnlyWithCredential()
     {
         return !(token != null && scope != null);
+    }
+
+    public boolean isJwtForward()
+    {
+        return jwtForward;
+    }
+
+    @Config("iceberg.rest-catalog.oauth2.jwt-forward")
+    @ConfigDescription("Use trino jwt to access iceberg catalog")
+    public OAuth2SecurityConfig setJwtForward(boolean jwtForward)
+    {
+        this.jwtForward = jwtForward;
+        return this;
     }
 }

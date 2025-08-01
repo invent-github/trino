@@ -28,6 +28,8 @@ import jakarta.ws.rs.container.ContainerRequestContext;
 
 import java.security.Key;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static io.jsonwebtoken.Claims.AUDIENCE;
@@ -70,8 +72,13 @@ public class JwtAuthenticator
         if (principal.isEmpty()) {
             return Optional.empty();
         }
+
+        Map<String, String> extraCredentials = new HashMap<>();
+        extraCredentials.put("jwt_token", token);
+
         return Optional.of(Identity.forUser(userMapping.mapUser(principal.get()))
                 .withPrincipal(new BasicPrincipal(principal.get()))
+                .withExtraCredentials(extraCredentials)
                 .build());
     }
 
