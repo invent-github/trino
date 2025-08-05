@@ -35,6 +35,7 @@ public class TestOAuth2SecurityConfig
                 .setToken(null)
                 .setScope(null)
                 .setServerUri(null)
+                .setJwtForward(false)
                 .setTokenRefreshEnabled(OAuth2Properties.TOKEN_REFRESH_ENABLED_DEFAULT));
     }
 
@@ -47,6 +48,7 @@ public class TestOAuth2SecurityConfig
                 .put("iceberg.rest-catalog.oauth2.scope", "scope")
                 .put("iceberg.rest-catalog.oauth2.server-uri", "http://localhost:8080/realms/iceberg/protocol/openid-connect/token")
                 .put("iceberg.rest-catalog.oauth2.token-refresh-enabled", "false")
+                .put("iceberg.rest-catalog.oauth2.jwt-forward", "true")
                 .buildOrThrow();
 
         OAuth2SecurityConfig expected = new OAuth2SecurityConfig()
@@ -54,7 +56,9 @@ public class TestOAuth2SecurityConfig
                 .setToken("token")
                 .setScope("scope")
                 .setServerUri(URI.create("http://localhost:8080/realms/iceberg/protocol/openid-connect/token"))
-                .setTokenRefreshEnabled(false);
+                .setTokenRefreshEnabled(false)
+                .setJwtForward(true);
+
         assertThat(expected.credentialOrTokenPresent()).isTrue();
         assertThat(expected.scopePresentOnlyWithCredential()).isFalse();
         assertFullMapping(properties, expected);

@@ -46,6 +46,8 @@ public class OAuth2SecurityProperties
                 value -> propertiesBuilder.put(OAuth2Properties.OAUTH2_SERVER_URI, value.toString()));
         propertiesBuilder.put(OAuth2Properties.TOKEN_REFRESH_ENABLED, String.valueOf(securityConfig.isTokenRefreshEnabled()));
 
+        propertiesBuilder.put("JWT_FORWARD", String.valueOf(securityConfig.isJwtForward()));
+
         this.securityProperties = propertiesBuilder.buildOrThrow();
     }
 
