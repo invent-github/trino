@@ -120,11 +120,6 @@ public class TrinoIcebergRestCatalogFactory
 
         if (Boolean.parseBoolean(rawSecurityProperties.get("JWT_FORWARD")) && identity.getExtraCredentials().containsKey("jwt_token")) {
             String token = identity.getExtraCredentials().get("jwt_token");
-
-            System.out.println("-------------!Forwarding JWT!-------------");
-            System.out.println(token);
-            System.out.println("------------------------------------------");
-
             rawSecurityProperties.remove(CREDENTIAL);
             rawSecurityProperties.put(TOKEN, token);
         }
