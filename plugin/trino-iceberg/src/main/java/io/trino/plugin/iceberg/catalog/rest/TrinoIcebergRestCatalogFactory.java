@@ -116,14 +116,6 @@ public class TrinoIcebergRestCatalogFactory
     @Override
     public synchronized TrinoCatalog create(ConnectorIdentity identity)
     {
-        Map<String, String> rawSecurityProperties = new HashMap<>(securityProperties.get());
-
-        if (Boolean.parseBoolean(rawSecurityProperties.get("JWT_FORWARD")) && identity.getExtraCredentials().containsKey("jwt_token")) {
-            String token = identity.getExtraCredentials().get("jwt_token");
-            rawSecurityProperties.remove(CREDENTIAL);
-            rawSecurityProperties.put(TOKEN, token);
-        }
-
         // Creation of the RESTSessionCatalog is lazy due to required network calls
         // for authorization and config route
         if (icebergCatalog == null) {
@@ -134,7 +126,7 @@ public class TrinoIcebergRestCatalogFactory
             properties.put("view-endpoints-supported", Boolean.toString(viewEndpointsEnabled));
             properties.put("trino-version", trinoVersion);
             properties.put(AUTH_SESSION_TIMEOUT_MS, String.valueOf(sessionTimeout.toMillis()));
-            properties.putAll(rawSecurityProperties);
+            properties.putAll(securityProperties.get());
             properties.putAll(awsProperties.get());
 
             if (vendedCredentialsEnabled) {
@@ -159,7 +151,14 @@ public class TrinoIcebergRestCatalogFactory
 
         // `OAuth2Properties.SCOPE` is not set as scope passed through credentials is unused in
         // https://github.com/apache/iceberg/blob/229d8f6fcd109e6c8943ea7cbb41dab746c6d0ed/core/src/main/java/org/apache/iceberg/rest/auth/OAuth2Util.java#L714-L721
-        Map<String, String> credentials = Maps.filterKeys(rawSecurityProperties, key -> Set.of(TOKEN, CREDENTIAL).contains(key));
+        Map<String, String> credentials = Maps.filterKeys(securityProperties.get(), key -> Set.of(TOKEN, CREDENTIAL).contains(key));
+
+        if (Boolean.parseBoolean(securityProperties.get().get("JWT_FORWARD"))) {
+            String jwt_token = identity.getExtraCredentials().get("jwt_token");
+            if (jwt_token != null) {
+                credentials = Map.of(TOKEN, jwt_token);
+            }
+        }
 
         return new TrinoRestCatalog(
                 icebergCatalog,
