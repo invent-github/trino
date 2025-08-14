@@ -97,6 +97,7 @@ import static java.lang.String.format;
 import static java.util.Locale.ENGLISH;
 import static java.util.Objects.requireNonNull;
 import static java.util.UUID.randomUUID;
+import static org.apache.iceberg.rest.auth.OAuth2Properties.JWT_TOKEN_TYPE;
 import static org.apache.iceberg.view.ViewProperties.COMMENT;
 
 public class TrinoRestCatalog
@@ -837,8 +838,13 @@ public class TrinoRestCatalog
 
                 Map<String, String> credentials = ImmutableMap.<String, String>builder()
                         .putAll(session.getIdentity().getExtraCredentials())
-                        .put(OAuth2Properties.JWT_TOKEN_TYPE, this.credentials.get(OAuth2Properties.TOKEN))
+                        .put(JWT_TOKEN_TYPE, subjectJwt)
                         .buildOrThrow();
+
+                String jwt_token = session.getIdentity().getExtraCredentials().get("jwt_token");
+                if (jwt_token != null) {
+                    credentials = Map.of(JWT_TOKEN_TYPE, jwt_token);
+                }
 
                 yield new SessionCatalog.SessionContext(sessionId, session.getUser(), credentials, properties, session.getIdentity());
             }
