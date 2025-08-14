@@ -837,7 +837,7 @@ public class TrinoRestCatalog
 
                 Map<String, String> credentials = ImmutableMap.<String, String>builder()
                         .putAll(session.getIdentity().getExtraCredentials())
-                        .put(OAuth2Properties.JWT_TOKEN_TYPE, subjectJwt)
+                        .put(OAuth2Properties.JWT_TOKEN_TYPE, this.credentials.get(OAuth2Properties.TOKEN))
                         .buildOrThrow();
 
                 yield new SessionCatalog.SessionContext(sessionId, session.getUser(), credentials, properties, session.getIdentity());
