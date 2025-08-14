@@ -158,6 +158,9 @@ public class TrinoIcebergRestCatalogFactory
             if (jwt_token != null) {
                 credentials = Map.of(TOKEN, jwt_token);
             }
+            else {
+                credentials = Map.of();
+            }
         }
 
         return new TrinoRestCatalog(
